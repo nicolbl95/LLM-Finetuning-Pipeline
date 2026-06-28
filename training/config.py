@@ -253,7 +253,7 @@ if __name__ == "__main__":
     # Créer une configuration par défaut
     config = TrainingConfig()
     
-    print("\n📋 MODÈLE ET DATASET")
+    print("\n[MODELE ET DATASET]")
     print("-" * 70)
     print(f"  Modèle              : {config.model_name}")
     print(f"  Dataset             : {config.dataset_name}")
@@ -261,7 +261,7 @@ if __name__ == "__main__":
     print(f"  Fichier eval        : {config.eval_file}")
     print(f"  Répertoire sortie   : {config.output_dir}")
     
-    print("\n🎯 HYPERPARAMÈTRES D'ENTRAÎNEMENT")
+    print("\n[HYPERPARAMETRES D'ENTRAINEMENT]")
     print("-" * 70)
     print(f"  Époques             : {config.num_epochs}")
     print(f"  Batch size          : {config.batch_size}")
@@ -271,43 +271,43 @@ if __name__ == "__main__":
     print(f"  Max length          : {config.max_length} tokens")
     print(f"  Warmup ratio        : {config.warmup_ratio}")
     
-    print("\n🔧 PARAMÈTRES LORA")
+    print("\n[PARAMETRES LORA]")
     print("-" * 70)
     print(f"  Rang (r)            : {config.lora.r}")
     print(f"  Alpha               : {config.lora.lora_alpha}")
     print(f"  Dropout             : {config.lora.lora_dropout}")
     print(f"  Modules cibles      : {config.lora.target_modules}")
     
-    print("\n💾 QUANTIZATION 4-BIT (QLoRA)")
+    print("\n[QUANTIZATION 4-BIT (QLoRA)]")
     print("-" * 70)
-    print(f"  Activée             : {config.use_4bit}")
+    print(f"  Activee             : {config.use_4bit}")
     if config.use_4bit:
         print(f"  Type de calcul      : {config.bnb_4bit_compute_dtype}")
-        print("  ⚠️  Nécessite Linux/Kaggle (pas compatible Windows)")
+        print("  ATTENTION: Necessite Linux/Kaggle (pas compatible Windows)")
     else:
-        print("  ℹ️  LoRA classique (compatible Windows)")
+        print("  INFO: LoRA classique (compatible Windows)")
     
-    print("\n📊 LOGGING ET SUIVI")
+    print("\n[LOGGING ET SUIVI]")
     print("-" * 70)
-    print(f"  Weights & Biases    : {'✓ Activé' if config.report_to_wandb else '✗ Désactivé'}")
+    print(f"  Weights & Biases    : {'[OK] Active' if config.report_to_wandb else '[--] Desactive'}")
     if config.report_to_wandb:
         print(f"  Projet W&B          : {config.wandb_project}")
         print(f"  Nom de l'exécution  : {config.wandb_run_name}")
     print(f"  Logging steps       : {config.logging_steps}")
     print(f"  Save steps          : {config.save_steps}")
     
-    print("\n⚙️  OPTIMISATION")
+    print("\n[OPTIMISATION]")
     print("-" * 70)
     print(f"  Gradient checkpoint : {config.gradient_checkpointing}")
     print(f"  FP16                : {config.fp16}")
     print(f"  Seed                : {config.seed}")
     
     print("\n" + "=" * 70)
-    print("✓ Configuration chargée avec succès !")
+    print("[OK] Configuration chargee avec succes !")
     print("=" * 70)
     
     # Afficher un avertissement si le fichier de données n'existe pas
     if not Path(config.train_file).exists():
-        print("\n⚠️  ATTENTION : Le fichier de données n'existe pas encore.")
-        print(f"   Exécutez : python -m training.prepare_dataset")
+        print("\nATTENTION: Le fichier de donnees n'existe pas encore.")
+        print(f"   Executez : python -m training.prepare_dataset")
         print("=" * 70)
