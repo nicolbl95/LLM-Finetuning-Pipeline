@@ -1,0 +1,102 @@
+﻿[
+  {
+    "question": "Qu'est-ce que le ratio cours/bénéfice, aussi appelé P/E ratio ?",
+    "expected_answer": "Le ratio cours/bénéfice compare le prix d'une action à son bénéfice par action. Il aide à estimer si une action paraît chère ou bon marché par rapport aux profits de l'entreprise."
+  },
+  {
+    "question": "Quelle est la différence entre une action et une obligation ?",
+    "expected_answer": "Une action représente une part de propriété dans une entreprise, tandis qu'une obligation représente une dette. L'actionnaire peut profiter de la croissance de l'entreprise, alors que l'obligataire reçoit généralement des intérêts."
+  },
+  {
+    "question": "Qu'est-ce qu'un dividende ?",
+    "expected_answer": "Un dividende est une partie des bénéfices qu'une entreprise distribue à ses actionnaires. Toutes les entreprises ne versent pas de dividendes."
+  },
+  {
+    "question": "Qu'est-ce que la diversification d'un portefeuille ?",
+    "expected_answer": "La diversification consiste à répartir ses investissements entre plusieurs actifs, secteurs ou régions afin de réduire le risque global du portefeuille."
+  },
+  {
+    "question": "Pourquoi les taux d'intérêt influencent-ils les marchés financiers ?",
+    "expected_answer": "Les taux d'intérêt influencent le coût du crédit, la consommation, l'investissement et la valorisation des actifs. Des taux plus élevés peuvent rendre les actions moins attractives et les obligations plus intéressantes."
+  },
+  {
+    "question": "Qu'est-ce que l'inflation ?",
+    "expected_answer": "L'inflation correspond à une hausse générale des prix. Elle réduit le pouvoir d'achat si les revenus n'augmentent pas au même rythme."
+  },
+  {
+    "question": "Comment une banque centrale peut-elle lutter contre l'inflation ?",
+    "expected_answer": "Une banque centrale peut augmenter ses taux d'intérêt pour ralentir le crédit, la demande et la hausse des prix. Elle peut aussi réduire la quantité de liquidités dans l'économie."
+  },
+  {
+    "question": "Qu'est-ce qu'un ETF ?",
+    "expected_answer": "Un ETF est un fonds coté en bourse qui suit généralement un indice, un secteur ou une classe d'actifs. Il permet d'investir dans un panier d'actifs avec un seul produit."
+  },
+  {
+    "question": "Quelle est la différence entre un ETF et une action individuelle ?",
+    "expected_answer": "Une action individuelle représente une seule entreprise. Un ETF représente un panier d'actifs, ce qui permet souvent une meilleure diversification."
+  },
+  {
+    "question": "Qu'est-ce que la volatilité en finance ?",
+    "expected_answer": "La volatilité mesure l'ampleur des variations du prix d'un actif. Une forte volatilité signifie que le prix peut monter ou baisser rapidement."
+  },
+  {
+    "question": "Qu'est-ce qu'un marché haussier ?",
+    "expected_answer": "Un marché haussier est une période pendant laquelle les prix des actifs augmentent de manière générale et durable."
+  },
+  {
+    "question": "Qu'est-ce qu'un marché baissier ?",
+    "expected_answer": "Un marché baissier est une période pendant laquelle les prix des actifs diminuent fortement ou durablement, souvent accompagnée d'un pessimisme des investisseurs."
+  },
+  {
+    "question": "Qu'est-ce que la capitalisation boursière ?",
+    "expected_answer": "La capitalisation boursière correspond à la valeur totale d'une entreprise en bourse. Elle se calcule en multipliant le prix d'une action par le nombre total d'actions en circulation."
+  },
+  {
+    "question": "Qu'est-ce que le rendement d'une obligation ?",
+    "expected_answer": "Le rendement d'une obligation représente le revenu qu'un investisseur peut attendre de cette obligation, souvent exprimé en pourcentage du prix de l'obligation."
+  },
+  {
+    "question": "Pourquoi le prix des obligations baisse-t-il souvent quand les taux montent ?",
+    "expected_answer": "Quand les taux d'intérêt montent, les nouvelles obligations offrent souvent de meilleurs rendements. Les anciennes obligations deviennent moins attractives, donc leur prix baisse."
+  },
+  {
+    "question": "Qu'est-ce que le risque de crédit ?",
+    "expected_answer": "Le risque de crédit est le risque qu'un emprunteur ne rembourse pas sa dette ou ne paie pas les intérêts dus."
+  },
+  {
+    "question": "Qu'est-ce que la liquidité d'un actif ?",
+    "expected_answer": "La liquidité mesure la facilité avec laquelle un actif peut être acheté ou vendu rapidement sans provoquer une forte variation de son prix."
+  },
+  {
+    "question": "Qu'est-ce que le cash-flow d'une entreprise ?",
+    "expected_answer": "Le cash-flow représente les flux de trésorerie générés par une entreprise. Il indique sa capacité à produire de l'argent réel à partir de ses activités."
+  },
+  {
+    "question": "Quelle est la différence entre chiffre d'affaires et bénéfice ?",
+    "expected_answer": "Le chiffre d'affaires correspond aux ventes totales d'une entreprise. Le bénéfice correspond à ce qui reste après avoir retiré les coûts et les charges."
+  },
+  {
+    "question": "Qu'est-ce que l'effet de levier financier ?",
+    "expected_answer": "L'effet de levier consiste à utiliser de la dette pour augmenter la taille d'un investissement. Il peut amplifier les gains, mais aussi les pertes."
+  },
+  {
+    "question": "Qu'est-ce qu'un actif refuge ?",
+    "expected_answer": "Un actif refuge est un actif considéré comme relativement sûr en période d'incertitude, comme certaines obligations d'État, l'or ou certaines devises fortes."
+  },
+  {
+    "question": "Qu'est-ce que le rendement ajusté du risque ?",
+    "expected_answer": "Le rendement ajusté du risque évalue la performance d'un investissement en tenant compte du niveau de risque pris pour obtenir ce rendement."
+  },
+  {
+    "question": "Pourquoi comparer plusieurs entreprises du même secteur ?",
+    "expected_answer": "Comparer des entreprises du même secteur permet d'évaluer leurs marges, leur croissance, leur endettement et leur valorisation dans un contexte comparable."
+  },
+  {
+    "question": "Qu'est-ce qu'un bilan comptable ?",
+    "expected_answer": "Un bilan comptable présente les actifs, les passifs et les capitaux propres d'une entreprise à une date donnée. Il montre ce que l'entreprise possède et ce qu'elle doit."
+  },
+  {
+    "question": "Qu'est-ce qu'un compte de résultat ?",
+    "expected_answer": "Un compte de résultat présente les revenus, les dépenses et le bénéfice ou la perte d'une entreprise sur une période donnée."
+  }
+]
