@@ -178,6 +178,59 @@ Sur CPU (déconseillé) : plusieurs jours
 
 L'évaluation automatisée utilise DeepEval pour mesurer la qualité des réponses générées par le modèle.
 
+### Recherche Sémantique avec Pinecone
+
+Le projet inclut une fonctionnalité de recherche sémantique pour trouver des questions similaires dans le dataset d'évaluation.
+
+#### Configuration Pinecone
+
+1. **Créer un compte Pinecone** : https://www.pinecone.io/
+2. **Obtenir votre clé API** depuis le dashboard Pinecone
+3. **Créer un fichier `.env`** à la racine du projet :
+```
+PINECONE_API_KEY=votre_cle_api_pinecone
+OPENAI_API_KEY=votre_cle_api_openai
+```
+
+#### Indexer les questions d'évaluation
+
+Avant de pouvoir rechercher des questions similaires, vous devez indexer le dataset :
+
+```bash
+python -m evaluation.metrics --index
+```
+
+Cette commande va :
+- Charger les questions depuis `data/eval/eval_questions.json`
+- Générer les embeddings avec Sentence Transformers (all-MiniLM-L6-v2)
+- Créer un index Pinecone nommé `eval-index`
+- Indexer toutes les questions avec leurs métadonnées
+
+L'indexation prend environ 1-2 minutes pour 100 questions.
+
+#### Rechercher des questions similaires
+
+Une fois l'index créé, vous pouvez rechercher des questions similaires :
+
+```bash
+# Rechercher les 3 questions les plus similaires
+python -m evaluation.metrics --search "What is a stock?"
+
+# Rechercher les 5 questions les plus similaires
+python -m evaluation.metrics --search "How to invest in bonds?" --top-k 5
+```
+
+La recherche retourne :
+- Les questions similaires trouvées
+- Leurs réponses attendues
+- Un score de similarité (0 à 1, 1 = identique)
+
+**Cas d'usage** :
+- Trouver des questions d'évaluation existantes avant d'en créer de nouvelles
+- Identifier des doublons dans le dataset
+- Explorer le contenu du dataset d'évaluation
+- Tester la couverture thématique du dataset
+
 ### Prérequis
 
 1. **Installer DeepEval** :
