@@ -5,11 +5,11 @@ Ce fichier contient les définitions des métriques utilisées pour évaluer
 la qualité des réponses générées par le modèle fine-tuné.
 """
 
-from deepeval.metrics import GEvalMetric
+from deepeval.metrics import GEval
 from deepeval.test_case import LLMTestCaseParams
 
 
-def get_finance_correctness_metric(threshold: float = 0.7) -> GEvalMetric:
+def get_finance_correctness_metric(threshold: float = 0.7) -> GEval:
     """
     Crée une métrique personnalisée pour évaluer la qualité des réponses financières.
     
@@ -23,9 +23,9 @@ def get_finance_correctness_metric(threshold: float = 0.7) -> GEvalMetric:
         threshold: Seuil minimum pour considérer la réponse comme acceptable (0.0 à 1.0)
         
     Returns:
-        GEvalMetric configurée pour l'évaluation financière
+        GEval configurée pour l'évaluation financière
     """
-    return GEvalMetric(
+    return GEval(
         name="Finance Correctness",
         criteria=(
             "Determine whether the actual output is factually correct, clear, "
