@@ -340,6 +340,49 @@ uvicorn api.serve:app --reload --port 8000
 
 Puis ouvrez dans votre navigateur : http://localhost:8000/docs
 
+## Interface Chat Chainlit
+
+Une interface de chat conviviale est disponible pour interagir avec l'assistant financier.
+
+### Lancer l'interface Chainlit
+
+**Prérequis** : L'API FastAPI doit être démarrée (voir section précédente).
+
+1. **Démarrer l'API FastAPI** (dans un premier terminal) :
+```bash
+uvicorn api.serve:app --reload --port 8000
+```
+
+2. **Lancer Chainlit** (dans un second terminal) :
+```bash
+chainlit run interfaces/chainlit_app.py --port 8080
+```
+
+3. **Ouvrir l'interface** dans votre navigateur : http://localhost:8080
+
+### Fonctionnalités
+
+- Interface de chat intuitive et professionnelle
+- Streaming des réponses en temps réel
+- Historique de conversation par session
+- Gestion d'erreurs claire si l'API n'est pas disponible
+- Mode mock par défaut (pas besoin de charger Mistral 7B pour tester)
+
+### Mode Mock vs Mode Réel
+
+Par défaut, l'interface utilise `use_mock=True` pour tester sans charger le modèle Mistral 7B.
+
+Pour utiliser le vrai modèle fine-tuné, modifiez `interfaces/chainlit_app.py` :
+```python
+payload = {
+    "question": message.content,
+    "max_tokens": 512,
+    "use_mock": False  # Utiliser le vrai modèle
+}
+```
+
+**Attention** : Le mode réel nécessite 16+ GB de RAM ou un GPU.
+
 ### Endpoints disponibles
 
 - **GET /health** : Vérifier que l'API fonctionne
