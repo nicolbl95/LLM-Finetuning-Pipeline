@@ -1,12 +1,15 @@
 .env
-__pycache__/
-*.pyc
 .venv/
 venv/
+__pycache__/
+*.pyc
 
 data/raw/*
 data/processed/*
-
 !data/raw/.gitkeep
 !data/processed/.gitkeep
+
+models/
+outputs/
+wandb/
 .aider*
