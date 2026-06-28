@@ -54,7 +54,7 @@ def save_jsonl(data, file_path):
         for item in data:
             f.write(json.dumps(item, ensure_ascii=False) + '\n')
     
-    print(f"✓ Sauvegardé {len(data)} exemples dans {file_path}")
+    print(f"[OK] Sauvegarde de {len(data)} exemples dans {file_path}")
 
 
 def main():
@@ -88,7 +88,7 @@ def main():
     save_jsonl(train_data, 'data/processed/train.jsonl')
     save_jsonl(eval_data, 'data/eval/eval.jsonl')
     
-    print("\n✓ Préparation du dataset terminée avec succès!")
+    print("\n[OK] Preparation du dataset terminee avec succes!")
     print(f"  - Entraînement: {len(train_data)} exemples")
     print(f"  - Évaluation: {len(eval_data)} exemples")
 
