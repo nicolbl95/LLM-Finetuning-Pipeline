@@ -328,6 +328,92 @@ Vous pouvez comparer les scores pour mesurer l'amélioration apportée par le fi
 - **Coût OpenAI** : Chaque évaluation consomme des tokens OpenAI (environ 0.01-0.05$ par question)
 - **Kaggle** : Vous pouvez aussi évaluer sur Kaggle avec un GPU gratuit
 
+## API REST
+
+Une API FastAPI est disponible pour exposer le modèle fine-tuné et générer des réponses.
+
+### Lancer l'API
+
+```bash
+uvicorn api.serve:app --reload --port 8000
+```
+
+Puis ouvrez dans votre navigateur : http://localhost:8000/docs
+
+### Endpoints disponibles
+
+- **GET /health** : Vérifier que l'API fonctionne
+- **GET /info** : Informations sur le modèle et sa disponibilité
+- **POST /generate** : Générer une réponse à partir d'une question
+
+### Mode Mock (sans charger le modèle)
+
+Pour tester l'API sans charger le modèle Mistral 7B (utile sur Windows ou machines avec peu de RAM) :
+
+```json
+{
+  "question": "What is a stock?",
+  "use_mock": true
+}
+```
+
+L'API retournera une réponse factice mais structurée, sans charger le modèle.
+
+### Mode Réel (avec le modèle)
+
+Pour utiliser le vrai modèle Mistral fine-tuné :
+
+```json
+{
+  "question": "What is a stock?",
+  "use_mock": false,
+  "max_tokens": 256
+}
+```
+
+**Attention** : Le modèle Mistral 7B nécessite beaucoup de mémoire (16+ GB de RAM ou GPU). Si le modèle n'est pas disponible ou trop lourd, l'API retournera une erreur claire et recommandera d'utiliser `use_mock=true`.
+
+### Chargement Lazy
+
+Le modèle n'est **pas chargé au démarrage** de l'API. Il est chargé seulement au premier appel `/generate` avec `use_mock=false`. Cela permet de :
+- Démarrer l'API rapidement
+- Tester les endpoints `/health` et `/info` sans consommer de mémoire
+- Charger le modèle uniquement quand nécessaire
+
+### Exemple avec curl
+
+```bash
+# Mode mock
+curl -X POST "http://localhost:8000/generate" \
+     -H "Content-Type: application/json" \
+     -d '{"question": "What is a stock?", "use_mock": true}'
+
+# Mode réel
+curl -X POST "http://localhost:8000/generate" \
+     -H "Content-Type: application/json" \
+     -d '{"question": "What is a stock?", "use_mock": false, "max_tokens": 256}'
+```
+
+### Exemple avec Python
+
+```python
+import requests
+
+# Mode mock
+response = requests.post(
+    "http://localhost:8000/generate",
+    json={"question": "What is a stock?", "use_mock": True}
+)
+print(response.json())
+
+# Mode réel
+response = requests.post(
+    "http://localhost:8000/generate",
+    json={"question": "What is a stock?", "use_mock": False, "max_tokens": 256}
+)
+print(response.json())
+```
+
 ## Structure du Projet
 
 ```
@@ -339,4 +425,5 @@ Vous pouvez comparer les scores pour mesurer l'amélioration apportée par le fi
 ├── evaluation/        # Scripts d'évaluation
 ├── interfaces/        # Interfaces utilisateur
 └── api/              # API de service
+    └── serve.py      # API REST FastAPI
 ```
