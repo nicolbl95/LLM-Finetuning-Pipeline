@@ -176,7 +176,104 @@ Sur CPU (déconseillé) : plusieurs jours
 
 ## Évaluation
 
-(Instructions à venir)
+L'évaluation automatisée utilise DeepEval pour mesurer la qualité des réponses générées par le modèle.
+
+### Prérequis
+
+1. **Installer DeepEval** :
+```bash
+pip install deepeval
+```
+
+2. **Configurer OpenAI API** :
+DeepEval utilise OpenAI pour évaluer les réponses. Créez un fichier `.env` à la racine du projet :
+```
+OPENAI_API_KEY=votre_cle_api_openai
+```
+
+3. **Fichier de questions** :
+Le fichier `data/eval/eval_questions.json` doit contenir vos questions de test au format :
+```json
+[
+  {
+    "question": "What is a stock?",
+    "expected_answer": "A stock represents ownership in a company..."
+  }
+]
+```
+
+### Vérification rapide (Dry-Run)
+
+Avant de lancer une évaluation complète, vérifiez que tout est correctement configuré :
+
+```bash
+python -m evaluation.evaluate --dry-run
+```
+
+Cette commande :
+- Lit les 2 premières questions du fichier d'évaluation
+- Affiche les prompts qui seront utilisés
+- Vérifie que le fichier JSON est au bon format
+- **Ne charge PAS le modèle Mistral 7B** (rapide, pas de GPU nécessaire)
+
+### Évaluer le modèle de base
+
+Pour évaluer le modèle **avant** le fine-tuning :
+
+```bash
+# Évaluer sur 10 questions (recommandé pour un test rapide)
+python -m evaluation.evaluate --model-type base --limit 10
+
+# Évaluer sur toutes les questions
+python -m evaluation.evaluate --model-type base
+```
+
+**Attention** : Le chargement de Mistral 7B nécessite beaucoup de mémoire (16+ GB de RAM ou GPU).
+
+### Évaluer le modèle fine-tuné
+
+Après avoir entraîné votre modèle avec `python -m training.train`, évaluez-le :
+
+```bash
+# Évaluer le modèle fine-tuné (10 questions)
+python -m evaluation.evaluate --model-type finetuned --limit 10
+
+# Évaluer avec un chemin d'adaptateur personnalisé
+python -m evaluation.evaluate --model-type finetuned --adapter-path mon/chemin/custom
+
+# Évaluer sur toutes les questions
+python -m evaluation.evaluate --model-type finetuned
+```
+
+### Métriques utilisées
+
+DeepEval évalue les réponses selon deux métriques :
+
+1. **Answer Relevancy** (seuil : 0.7)
+   - Mesure si la réponse est pertinente par rapport à la question
+   - Score de 0 à 1 (1 = parfaitement pertinent)
+
+2. **Finance Correctness** (seuil : 0.7)
+   - Métrique personnalisée qui évalue :
+     - L'exactitude financière des informations
+     - La clarté de la réponse
+     - L'absence de contradictions avec la réponse attendue
+   - Score de 0 à 1 (1 = parfaitement correct)
+
+### Résultats
+
+Les résultats sont sauvegardés dans `outputs/evaluation/` avec un timestamp :
+- `base_model_YYYYMMDD_HHMMSS_results.json` : Résultats du modèle de base
+- `finetuned_model_YYYYMMDD_HHMMSS_results.json` : Résultats du modèle fine-tuné
+
+Vous pouvez comparer les scores pour mesurer l'amélioration apportée par le fine-tuning.
+
+### Conseils
+
+- **Commencez petit** : Utilisez `--limit 10` pour tester rapidement
+- **GPU recommandé** : L'évaluation est beaucoup plus rapide avec un GPU
+- **Coût OpenAI** : Chaque évaluation consomme des tokens OpenAI (environ 0.01-0.05$ par question)
+- **Kaggle** : Vous pouvez aussi évaluer sur Kaggle avec un GPU gratuit
 
 ## Structure du Projet
 
