@@ -71,7 +71,108 @@ Cette commande affiche tous les paramètres configurés.
 
 ## Entraînement
 
-(Instructions à venir)
+### Vérification avant entraînement (Dry-Run)
+
+Avant de lancer un entraînement complet, vous pouvez vérifier que tout est correctement configuré :
+
+```bash
+python -m training.train --dry-run
+```
+
+Cette commande va :
+- Charger la configuration
+- Charger le tokenizer
+- Charger le dataset
+- Afficher un exemple formaté
+- **Ne PAS lancer l'entraînement**
+
+C'est utile pour vérifier que vos données sont au bon format sans consommer de ressources GPU.
+
+### Entraînement local (Windows - LoRA uniquement)
+
+Sur Windows, la quantization 4-bit (QLoRA) ne fonctionne pas. Utilisez LoRA classique :
+
+1. Dans `training/config.py`, assurez-vous que `use_4bit=False`
+2. Lancez l'entraînement :
+
+```bash
+python -m training.train
+```
+
+**Attention** : L'entraînement d'un modèle 7B comme Mistral nécessite beaucoup de mémoire GPU (16+ GB). Sur Windows sans GPU puissant, préférez Kaggle.
+
+### Entraînement sur Kaggle (Recommandé)
+
+Kaggle offre des GPUs gratuits (T4 avec 16GB de VRAM) parfaits pour le fine-tuning.
+
+**Étapes :**
+
+1. **Créer un nouveau notebook Kaggle**
+   - Allez sur [kaggle.com/code](https://www.kaggle.com/code)
+   - Cliquez sur "New Notebook"
+   - Activez le GPU : Settings → Accelerator → GPU T4 x2
+
+2. **Uploader votre code**
+   - Créez un dataset Kaggle avec votre code :
+     - Compressez votre dossier `training/` en ZIP
+     - Uploadez sur Kaggle Datasets
+   - Ou clonez depuis GitHub directement dans le notebook
+
+3. **Installer les dépendances**
+   ```python
+   !pip install -q transformers datasets peft trl bitsandbytes accelerate wandb
+   ```
+
+4. **Configurer pour QLoRA**
+   Dans votre notebook, modifiez la config :
+   ```python
+   from training.config import TrainingConfig, LoRAConfig
+   
+   cfg = TrainingConfig()
+   cfg.use_4bit = True  # Activer QLoRA sur Kaggle
+   cfg.num_epochs = 3
+   cfg.output_dir = "/kaggle/working/mistral-finance-lora"
+   
+   lora_cfg = LoRAConfig()
+   ```
+
+5. **Lancer l'entraînement**
+   ```python
+   from training.train import train
+   train(cfg, lora_cfg)
+   ```
+
+6. **Télécharger le modèle**
+   - Le modèle sera sauvegardé dans `/kaggle/working/mistral-finance-lora`
+   - Téléchargez les fichiers depuis l'interface Kaggle
+   - Ou sauvegardez directement sur Kaggle Datasets
+
+**Astuce W&B** : Pour suivre vos expériences avec Weights & Biases sur Kaggle :
+```python
+import wandb
+wandb.login()  # Entrez votre clé API W&B
+
+cfg.report_to_wandb = True
+cfg.wandb_project = "mistral-finance-finetuning"
+```
+
+### Monitoring de l'entraînement
+
+Si vous avez activé Weights & Biases (`report_to_wandb=True`), vous pouvez suivre :
+- La loss d'entraînement en temps réel
+- L'utilisation de la mémoire GPU
+- Le temps par epoch
+- Les gradients et poids du modèle
+
+Accédez à votre dashboard W&B : https://wandb.ai/
+
+### Temps d'entraînement estimé
+
+Sur GPU T4 (Kaggle) avec QLoRA :
+- 1000 exemples, 3 epochs : ~30-45 minutes
+- 5000 exemples, 3 epochs : ~2-3 heures
+
+Sur CPU (déconseillé) : plusieurs jours
 
 ## Évaluation
 
