@@ -1,0 +1,16 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Git Auto Commit Push",
+            "type": "shell",
+            "command": "git add -A && git diff --cached --quiet && echo 'No changes to commit.' || (git commit -m 'Mise a jour du projet' && git push origin main)",
+            "problemMatcher": [],
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared",
+                "clear": false
+            }
+        }
+    ]
+}
