@@ -65,7 +65,9 @@ def load_eval_questions(eval_file: str) -> List[Dict[str, str]]:
             f'[{{"question": "...", "expected_answer": "..."}}]'
         )
     
-    with open(eval_path, 'r', encoding='utf-8') as f:
+    # Utiliser utf-8-sig pour gérer le BOM (Byte Order Mark) UTF-8 sur Windows
+    # Cela permet de lire correctement les fichiers avec ou sans BOM
+    with open(eval_path, 'r', encoding='utf-8-sig') as f:
         data = json.load(f)
     
     # Vérifier que c'est bien une liste
