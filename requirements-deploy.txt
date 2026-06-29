@@ -1,0 +1,8 @@
+# Dépendances minimales pour le déploiement Render (mode mock uniquement)
+# Ce fichier est volontairement léger pour éviter les dépendances Windows (pywin32)
+# et les bibliothèques lourdes (torch, transformers) non nécessaires en mode mock.
+
+fastapi==0.115.5
+uvicorn[standard]==0.32.1
+pydantic==2.10.3
+python-dotenv==1.0.1

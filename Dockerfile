@@ -4,12 +4,14 @@ FROM python:3.12-slim
 # Definir le repertoire de travail
 WORKDIR /app
 
-# Copier le fichier des dependances
-COPY requirements.txt .
+# Copier le fichier des dependances pour le deploiement
+# Note : requirements-deploy.txt contient uniquement les dependances necessaires
+# pour l'API FastAPI en mode mock (pas de torch, transformers, pywin32, etc.)
+COPY requirements-deploy.txt .
 
 # Installer les dependances Python
 # --no-cache-dir : ne pas garder le cache pip pour reduire la taille
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir -r requirements-deploy.txt
 
 # Copier tout le projet dans le conteneur
 COPY . .

@@ -4,9 +4,41 @@ Ce projet permet de fine-tuner un modèle de langage avec LoRA sur le dataset fi
 
 ## Installation
 
+### Environnement de développement local complet
+
+Pour le développement local avec toutes les fonctionnalités (fine-tuning, évaluation, etc.) :
+
 ```bash
 pip install -r requirements.txt
 ```
+
+**Note** : `requirements.txt` contient toutes les dépendances nécessaires pour :
+- Fine-tuning LoRA/QLoRA (transformers, peft, bitsandbytes)
+- Évaluation avec DeepEval
+- Recherche sémantique avec Pinecone
+- Interfaces Dash et Chainlit
+- API FastAPI complète
+
+### Déploiement Render (mode mock uniquement)
+
+Pour le déploiement sur Render, un fichier `requirements-deploy.txt` allégé est utilisé :
+
+```bash
+pip install -r requirements-deploy.txt
+```
+
+**Note** : `requirements-deploy.txt` contient uniquement les dépendances minimales pour l'API FastAPI en mode mock :
+- fastapi
+- uvicorn[standard]
+- pydantic
+- python-dotenv
+
+Ce fichier **exclut volontairement** :
+- Les dépendances Windows (pywin32) qui causent des erreurs sur Linux
+- Les bibliothèques lourdes (torch, transformers, peft) non nécessaires en mode mock
+- Les outils d'évaluation (deepeval, sentence-transformers, pinecone)
+
+Le déploiement Render utilise `APP_MODE=mock` pour éviter de charger le modèle Mistral 7B et fonctionne sans GPU ni clés API.
 
 ## Préparation du Dataset
 
@@ -399,11 +431,17 @@ La démo sur Render fonctionne actuellement en **mode mock** :
 - Aucun modèle Mistral 7B n'est chargé (économie de ressources)
 - Les réponses sont simulées pour démontrer l'architecture de l'API
 - Le mode mock permet de tester l'API sans GPU ni modèle lourd
+- Utilise `requirements-deploy.txt` (dépendances minimales) au lieu de `requirements.txt` (complet)
+
+**Pourquoi deux fichiers requirements ?**
+- `requirements.txt` : Environnement complet pour développement local (inclut torch, transformers, peft, etc.)
+- `requirements-deploy.txt` : Dépendances minimales pour Render (FastAPI uniquement, pas de pywin32 ni bibliothèques lourdes)
 
 **Après l'entraînement LoRA** :
 - Le modèle Mistral 7B fine-tuné sera disponible
 - Le mode `use_mock=false` permettra d'obtenir de vraies réponses générées par le modèle
 - Les adaptateurs LoRA seront chargés automatiquement
+- Il faudra alors utiliser `requirements.txt` complet et un service avec GPU
 
 ### Tester l'API avec curl
 
