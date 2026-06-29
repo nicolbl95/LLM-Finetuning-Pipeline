@@ -1,23 +1,19 @@
 # LLM Finance Fine-Tuning Pipeline
 
 ![Python](https://img.shields.io/badge/Python-3.12-3776AB?style=for-the-badge&logo=python&logoColor=white)
-![FastAPI](https://img.shields.io/badge/FastAPI-0.115-009688?style=for-the-badge&logo=fastapi&logoColor=white)
+![FastAPI](https://img.shields.io/badge/FastAPI-API_Backend-009688?style=for-the-badge&logo=fastapi&logoColor=white)
 ![Docker](https://img.shields.io/badge/Docker-Deployment-2496ED?style=for-the-badge&logo=docker&logoColor=white)
 ![Render](https://img.shields.io/badge/Render-Cloud_Deploy-46E3B7?style=for-the-badge&logo=render&logoColor=black)
 ![Hugging Face](https://img.shields.io/badge/HuggingFace-Transformers-FFD21E?style=for-the-badge&logo=huggingface&logoColor=black)
-![Transformers](https://img.shields.io/badge/Transformers-4.46-FFB000?style=for-the-badge&logo=huggingface&logoColor=black)
 ![PEFT](https://img.shields.io/badge/PEFT-LoRA_QLoRA-B91C1C?style=for-the-badge&logoColor=white)
 ![TRL](https://img.shields.io/badge/TRL-SFTTrainer-5B21B6?style=for-the-badge&logoColor=white)
 ![PyTorch](https://img.shields.io/badge/PyTorch-Deep_Learning-EE4C2C?style=for-the-badge&logo=pytorch&logoColor=white)
 ![DeepEval](https://img.shields.io/badge/DeepEval-LLM_Evaluation-6B46C1?style=for-the-badge&logoColor=white)
 ![Pinecone](https://img.shields.io/badge/Pinecone-Vector_DB-000000?style=for-the-badge&logoColor=white)
-![Sentence Transformers](https://img.shields.io/badge/Sentence_Transformers-Embeddings-2E7D32?style=for-the-badge&logoColor=white)
-![Weights & Biases](https://img.shields.io/badge/Weights_&_Biases-Experiment_Tracking-FFBE00?style=for-the-badge&logo=weightsandbiases&logoColor=black)
-![Chainlit](https://img.shields.io/badge/Chainlit-Chat_Interface-1C1C1C?style=for-the-badge&logoColor=white)
+![Weights & Biases](https://img.shields.io/badge/W&B-Experiment_Tracking-FFBE00?style=for-the-badge&logo=weightsandbiases&logoColor=black)
 ![Plotly Dash](https://img.shields.io/badge/Plotly_Dash-Dashboard-3F4F75?style=for-the-badge&logo=plotly&logoColor=white)
-![Uvicorn](https://img.shields.io/badge/Uvicorn-ASGI_Server-111827?style=for-the-badge&logoColor=white)
-![Pydantic](https://img.shields.io/badge/Pydantic-Data_Validation-E92063?style=for-the-badge&logo=pydantic&logoColor=white)
-![License](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)
+
+
 Pipeline complet de fine-tuning d'un modèle de langage (Mistral 7B) avec LoRA/QLoRA sur le domaine financier, incluant préparation des données, entraînement, évaluation automatisée avec DeepEval, recherche sémantique avec Pinecone, et déploiement d'une API REST FastAPI.
 
 ## Description
