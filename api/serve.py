@@ -205,6 +205,7 @@ def load_model_and_tokenizer(cfg):
             
             try:
                 # Charger les adaptateurs LoRA par-dessus le modele de base
+                # NOTE: PeftModel est compatible avec pipeline() au runtime meme si Pylance ne le detecte pas
                 model = PeftModel.from_pretrained(model, str(adapter_path))
                 is_finetuned = True
                 logger.info("Adaptateurs LoRA charges avec succes")
