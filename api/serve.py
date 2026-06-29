@@ -17,7 +17,7 @@ Puis ouvrir : http://localhost:8000/docs
 """
 
 from pathlib import Path
-from typing import Optional, Any
+from typing import Optional, Any, cast
 import logging
 import os
 
@@ -220,10 +220,11 @@ def load_model_and_tokenizer(cfg):
         # Creer le pipeline de generation
         logger.info("Creation du pipeline de generation...")
         # NOTE: PeftModel herite de PreTrainedModel et est compatible avec pipeline()
-        # Pylance peut afficher un warning mais le code fonctionne correctement au runtime
-        gen_pipeline = pipeline(  # type: ignore[call-overload]
+        # au runtime. On utilise cast() pour indiquer a Pylance que le type est correct.
+        # Le pipeline Hugging Face accepte PeftModel meme si le type n'est pas parfaitement detecte.
+        gen_pipeline = pipeline(
             "text-generation",
-            model=model,
+            model=cast(Any, model),  # PeftModel est compatible avec pipeline() au runtime
             tokenizer=tokenizer,
             max_new_tokens=512,
             do_sample=True,
@@ -729,11 +730,16 @@ async def generate(request: GenerationRequest):
         # Charger le modele si necessaire (lazy loading)
         gen_pipeline, model_name, is_finetuned = get_model_pipeline()
         
+        # Verifier que le pipeline est bien charge
+        if gen_pipeline is None:
+            raise RuntimeError("Le pipeline n'a pas pu etre charge correctement")
+        
         # Construire le prompt au format Alpaca
         prompt = build_prompt(request.question)
         
         # Generer la reponse
         logger.info("Generation en cours...")
+        # Le pipeline est maintenant verifie comme non-None
         outputs = gen_pipeline(
             prompt,
             max_new_tokens=request.max_tokens,
@@ -742,6 +748,10 @@ async def generate(request: GenerationRequest):
             top_p=0.95,
             repetition_penalty=1.15
         )
+        
+        # Verifier que le pipeline a bien retourne des resultats
+        if not outputs or len(outputs) == 0:
+            raise RuntimeError("Le pipeline n'a genere aucune reponse")
         
         # Extraire la reponse generee
         generated_text = outputs[0]["generated_text"]
