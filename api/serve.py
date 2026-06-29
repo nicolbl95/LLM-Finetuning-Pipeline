@@ -22,6 +22,7 @@ import logging
 import os
 
 from fastapi import FastAPI, HTTPException
+from fastapi.responses import HTMLResponse
 from pydantic import BaseModel, Field
 
 # NOTE: Les imports lourds (transformers, peft, torch) sont deplaces
@@ -75,9 +76,18 @@ class GenerationResponse(BaseModel):
 # ========================================
 
 app = FastAPI(
-    title="API Mistral Finance Fine-Tuned",
-    description="API REST pour generer des reponses financieres avec Mistral 7B fine-tune avec LoRA",
-    version="1.0.0"
+    title="LLM Finance Fine-Tuning Pipeline - API Demo",
+    description=(
+        "Pipeline complet de fine-tuning LLM pour le domaine financier. "
+        "Cette API expose un modele Mistral 7B fine-tune avec LoRA sur le dataset finance-alpaca. "
+        "Mode demo actuel : mock (sans GPU). Le modele reel sera disponible apres entrainement. "
+        "Stack : FastAPI + Docker + Render + Mistral 7B + LoRA/QLoRA + DeepEval + Pinecone + W&B + Chainlit + Plotly Dash."
+    ),
+    version="1.0.0",
+    contact={
+        "name": "Nicolas Blondeau",
+        "url": "https://github.com/nicolbl95"
+    }
 )
 
 
@@ -276,15 +286,288 @@ def get_model_pipeline():
 # ENDPOINTS
 # ========================================
 
+@app.get("/")
+async def home():
+    """
+    Page d'accueil de la demo pour les recruteurs.
+    
+    Presente le projet, la stack technique, et guide vers les endpoints disponibles.
+    
+    Returns:
+        HTMLResponse: Page HTML professionnelle
+    """
+    html_content = """
+    <!DOCTYPE html>
+    <html lang="fr">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>LLM Finance Fine-Tuning Pipeline - Demo</title>
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+                line-height: 1.6;
+                color: #333;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                min-height: 100vh;
+                padding: 20px;
+            }
+            .container {
+                max-width: 900px;
+                margin: 0 auto;
+                background: white;
+                border-radius: 12px;
+                box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+                overflow: hidden;
+            }
+            .header {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                padding: 40px 30px;
+                text-align: center;
+            }
+            .header h1 {
+                font-size: 2em;
+                margin-bottom: 10px;
+                font-weight: 700;
+            }
+            .header p {
+                font-size: 1.1em;
+                opacity: 0.95;
+            }
+            .content {
+                padding: 40px 30px;
+            }
+            .section {
+                margin-bottom: 35px;
+            }
+            .section h2 {
+                color: #667eea;
+                font-size: 1.5em;
+                margin-bottom: 15px;
+                border-bottom: 2px solid #667eea;
+                padding-bottom: 8px;
+            }
+            .section p {
+                margin-bottom: 12px;
+                color: #555;
+            }
+            .tech-stack {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 10px;
+                margin-top: 15px;
+            }
+            .tech-badge {
+                background: #f0f0f0;
+                padding: 8px 16px;
+                border-radius: 20px;
+                font-size: 0.9em;
+                color: #667eea;
+                font-weight: 600;
+            }
+            .buttons {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 15px;
+                margin-top: 20px;
+            }
+            .btn {
+                display: inline-block;
+                padding: 12px 24px;
+                background: #667eea;
+                color: white;
+                text-decoration: none;
+                border-radius: 6px;
+                font-weight: 600;
+                transition: all 0.3s ease;
+                text-align: center;
+            }
+            .btn:hover {
+                background: #5568d3;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+            }
+            .btn-secondary {
+                background: #764ba2;
+            }
+            .btn-secondary:hover {
+                background: #653a8a;
+            }
+            .code-block {
+                background: #f5f5f5;
+                border-left: 4px solid #667eea;
+                padding: 20px;
+                border-radius: 6px;
+                overflow-x: auto;
+                margin-top: 15px;
+            }
+            .code-block pre {
+                margin: 0;
+                font-family: 'Courier New', monospace;
+                font-size: 0.9em;
+                color: #333;
+            }
+            .highlight {
+                background: #fff3cd;
+                padding: 15px;
+                border-radius: 6px;
+                border-left: 4px solid #ffc107;
+                margin-top: 15px;
+            }
+            .highlight strong {
+                color: #856404;
+            }
+            .footer {
+                background: #f8f9fa;
+                padding: 20px 30px;
+                text-align: center;
+                color: #666;
+                font-size: 0.9em;
+            }
+            @media (max-width: 600px) {
+                .header h1 {
+                    font-size: 1.5em;
+                }
+                .content {
+                    padding: 30px 20px;
+                }
+                .buttons {
+                    flex-direction: column;
+                }
+                .btn {
+                    width: 100%;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="header">
+                <h1>LLM Finance Fine-Tuning Pipeline</h1>
+                <p>Pipeline complet de fine-tuning LLM pour le domaine financier</p>
+            </div>
+            
+            <div class="content">
+                <div class="section">
+                    <h2>Objectif du Projet</h2>
+                    <p>
+                        Ce projet presente un <strong>pipeline complet de fine-tuning LLM</strong> pour le domaine financier.
+                        Il couvre toutes les etapes : preparation des donnees, fine-tuning LoRA/QLoRA, evaluation automatisee,
+                        recherche semantique, et deploiement API.
+                    </p>
+                </div>
+
+                <div class="section">
+                    <h2>Demo Actuelle</h2>
+                    <p>
+                        Cette instance Render est une <strong>demo publique en mode mock</strong>. L'API fonctionne sans charger
+                        le modele Mistral 7B (7 milliards de parametres) pour economiser les ressources.
+                    </p>
+                    <div class="highlight">
+                        <strong>Pourquoi mode mock ?</strong> Le vrai modele Mistral 7B fine-tune avec LoRA necessite un GPU
+                        et sera branche apres l'entrainement complet. Cette demo permet de tester l'architecture de l'API
+                        sans infrastructure lourde.
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h2>Stack Technique</h2>
+                    <div class="tech-stack">
+                        <span class="tech-badge">FastAPI</span>
+                        <span class="tech-badge">Docker</span>
+                        <span class="tech-badge">Render</span>
+                        <span class="tech-badge">Mistral 7B</span>
+                        <span class="tech-badge">LoRA/QLoRA</span>
+                        <span class="tech-badge">PEFT</span>
+                        <span class="tech-badge">DeepEval</span>
+                        <span class="tech-badge">Pinecone</span>
+                        <span class="tech-badge">Weights & Biases</span>
+                        <span class="tech-badge">Chainlit</span>
+                        <span class="tech-badge">Plotly Dash</span>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h2>Endpoints Disponibles</h2>
+                    <div class="buttons">
+                        <a href="/docs" class="btn">Open API Docs (Swagger)</a>
+                        <a href="/health" class="btn btn-secondary">Health Check</a>
+                        <a href="/info" class="btn btn-secondary">Project Info</a>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h2>Exemple d'Utilisation</h2>
+                    <p>Testez l'endpoint de generation avec cet exemple :</p>
+                    <div class="code-block">
+                        <pre>POST /generate
+
+{
+  "question": "Quelle est la difference entre une action et une obligation ?",
+  "max_tokens": 128,
+  "use_mock": true
+}</pre>
+                    </div>
+                    <p style="margin-top: 15px;">
+                        <strong>Note :</strong> Utilisez <code>use_mock: true</code> pour obtenir une reponse demo sans charger le modele.
+                        Le mode <code>use_mock: false</code> sera disponible apres l'entrainement GPU complet.
+                    </p>
+                </div>
+
+                <div class="section">
+                    <h2>Fonctionnalites Completes</h2>
+                    <p>Le projet complet inclut :</p>
+                    <ul style="margin-left: 20px; color: #555;">
+                        <li>Fine-tuning LoRA/QLoRA sur dataset finance-alpaca (1000 exemples)</li>
+                        <li>Evaluation automatisee avec DeepEval (metriques personnalisees)</li>
+                        <li>Recherche semantique avec Pinecone (embeddings + vector DB)</li>
+                        <li>Tracking des experiences avec Weights & Biases</li>
+                        <li>Interface chat Chainlit pour interaction utilisateur</li>
+                        <li>Dashboard Plotly Dash pour visualisation des resultats</li>
+                        <li>API REST FastAPI avec documentation Swagger</li>
+                        <li>Deploiement Docker sur Render</li>
+                    </ul>
+                </div>
+
+                <div class="section">
+                    <h2>Code Source</h2>
+                    <p>
+                        Le code complet est disponible sur GitHub avec documentation detaillee, notebooks d'exploration,
+                        et scripts d'entrainement/evaluation.
+                    </p>
+                    <div class="buttons">
+                        <a href="https://github.com/nicolbl95" class="btn" target="_blank">Voir sur GitHub</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer">
+                <p>LLM Finance Fine-Tuning Pipeline v1.0.0 | Nicolas Blondeau | 2024</p>
+                <p style="margin-top: 5px;">Construit avec FastAPI, Mistral 7B, LoRA, DeepEval, Pinecone, W&B</p>
+            </div>
+        </div>
+    </body>
+    </html>
+    """
+    return HTMLResponse(content=html_content)
+
+
 @app.get("/health")
 async def health_check():
     """
     Endpoint de sante de l'API.
     
-    Retourne le statut de l'API et si le modele est charge.
+    Verifie que l'API fonctionne correctement et indique si le modele est charge en memoire.
+    Utile pour les health checks automatises et le monitoring.
     
     Returns:
-        dict: Statut de l'API
+        dict: Statut de l'API avec informations sur le modele
     """
     return {
         "status": "healthy",
@@ -296,13 +579,19 @@ async def health_check():
 @app.get("/info")
 async def info():
     """
-    Informations sur l'API et le modele.
+    Informations detaillees sur l'API, le modele, et la stack technique.
+    
+    Retourne des informations sur :
+    - La version de l'API et le mode de deploiement
+    - Le modele de base et les adaptateurs LoRA
+    - La stack technique complete (evaluation, vector DB, tracking)
+    - Les endpoints disponibles
     
     NOTE: En mode mock (Render), certaines informations ne sont pas disponibles
     car TrainingConfig necessite des dependances lourdes.
     
     Returns:
-        dict: Informations detaillees
+        dict: Informations detaillees sur le projet
     """
     # En mode mock, retourner des infos limitees sans charger TrainingConfig
     if APP_MODE == "mock":
@@ -377,22 +666,34 @@ async def info():
 @app.post("/generate", response_model=GenerationResponse)
 async def generate(request: GenerationRequest):
     """
-    Genere une reponse a partir d'une question.
+    Genere une reponse financiere a partir d'une question.
     
     Deux modes disponibles :
-    1. Mode mock (use_mock=True) : Retourne une reponse factice sans charger le modele
-    2. Mode reel (use_mock=False) : Utilise le modele Mistral fine-tune
+    1. **Mode mock** (use_mock=True) : Retourne une reponse demo sans charger le modele.
+       Ideal pour tester l'API sans GPU ni infrastructure lourde.
     
-    En environnement Render (APP_MODE=mock), le mode mock est force par defaut.
+    2. **Mode reel** (use_mock=False) : Utilise le modele Mistral 7B fine-tune avec LoRA.
+       Necessite un GPU et le modele entraine. Sera disponible apres entrainement complet.
+    
+    En environnement Render (APP_MODE=mock), le mode mock est force par defaut pour economiser les ressources.
     
     Args:
-        request: Requete contenant la question et les parametres
+        request: Requete contenant la question financiere et les parametres de generation
         
     Returns:
-        GenerationResponse: Reponse generee
+        GenerationResponse: Reponse generee avec le modele utilise et le mode d'execution
         
     Raises:
-        HTTPException: Si erreur lors de la generation
+        HTTPException: Si erreur lors de la generation ou si les dependances ne sont pas installees
+        
+    Example:
+        ```json
+        {
+          "question": "Quelle est la difference entre une action et une obligation ?",
+          "max_tokens": 128,
+          "use_mock": true
+        }
+        ```
     """
     # Si APP_MODE=mock, forcer le mode mock (environnement Render)
     use_mock = request.use_mock or (APP_MODE == "mock")

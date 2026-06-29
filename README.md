@@ -378,11 +378,24 @@ Une démo en ligne de l'API est disponible sur Render pour les recruteurs et tes
 
 ### Accès à la démo
 
-**URL de la documentation interactive (Swagger UI)** : `https://votre-app.onrender.com/docs`
+**URL principale de la démo** : `https://votre-app.onrender.com/`
+
+Cette page d'accueil présente le projet de manière claire et professionnelle, avec :
+- Objectif du projet et stack technique
+- Explication du mode mock actuel
+- Liens vers tous les endpoints disponibles
+- Exemple d'utilisation de l'API
+
+**URL de la documentation API interactive (Swagger UI)** : `https://votre-app.onrender.com/docs`
 
 Cette interface permet de tester tous les endpoints de l'API directement depuis le navigateur.
 
 ### Endpoints disponibles
+
+#### GET /
+Page d'accueil de la démo avec présentation du projet, stack technique, et guide d'utilisation.
+
+**Exemple de réponse** : Page HTML professionnelle avec toutes les informations pour les recruteurs.
 
 #### GET /health
 Vérifie que l'API fonctionne correctement.
