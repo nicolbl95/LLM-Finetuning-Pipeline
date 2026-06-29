@@ -381,15 +381,18 @@ Une démo en ligne de l'API est disponible sur Render pour les recruteurs et tes
 **URL principale (Landing Page)** : `https://llm-finetuning-pipeline.onrender.com/`
 
 Cette page d'accueil présente le projet de manière claire et professionnelle, avec :
+- Guide "Comment Tester la Demo" en 3 étapes simples
+- Bouton principal "Try the Interactive API Demo" vers /docs
 - Objectif du projet et stack technique complète
 - Explication du mode mock actuel (pourquoi pas de GPU)
-- Liens vers tous les endpoints disponibles
 - Exemple d'utilisation de l'API avec JSON
-- Boutons interactifs vers /docs, /health, /info
+- Endpoints techniques /health et /info
 
 **URL de la documentation API interactive (Swagger UI)** : `https://llm-finetuning-pipeline.onrender.com/docs`
 
 Cette interface permet de tester tous les endpoints de l'API directement depuis le navigateur.
+
+**The public Render demo runs in mock mode, so recruiters can test the API flow without GPU inference.**
 
 ### Endpoints disponibles
 
@@ -398,11 +401,11 @@ Page d'accueil HTML de la démo avec présentation complète du projet.
 
 **Contenu** :
 - Titre et description du projet
+- **Guide "Comment Tester la Demo"** avec 3 étapes claires en haut de page
+- Bouton principal "Try the Interactive API Demo" vers /docs (Swagger UI)
 - Explication du mode mock actuel
 - Stack technique complète (badges visuels)
-- **Guide "Comment Tester la Demo"** avec 3 étapes claires
-- Bouton principal vers /docs (Swagger UI) mis en évidence
-- Boutons secondaires vers /health et /info (JSON brut)
+- Endpoints techniques /health et /info (JSON brut)
 - Exemple JSON pour POST /generate
 - Liste des fonctionnalités complètes du pipeline
 - Lien vers le code source GitHub
@@ -410,7 +413,7 @@ Page d'accueil HTML de la démo avec présentation complète du projet.
 **Exemple** : Ouvrez `https://llm-finetuning-pipeline.onrender.com/` dans votre navigateur pour voir la landing page professionnelle.
 
 **Guide d'utilisation pour recruteurs** :
-1. Cliquez sur "Open API Docs" pour accéder à l'interface Swagger interactive
+1. Cliquez sur "Try the Interactive API Demo" pour accéder à l'interface Swagger interactive
 2. Ouvrez l'endpoint POST /generate et cliquez sur "Try it out"
 3. Utilisez l'exemple JSON fourni et cliquez sur "Execute" pour voir la réponse
 

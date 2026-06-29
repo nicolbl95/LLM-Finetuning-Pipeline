@@ -398,8 +398,17 @@ async def home():
                 transform: translateY(-2px);
                 box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
             }
+            .btn-primary {
+                background: #667eea;
+                font-size: 1.1em;
+                padding: 15px 30px;
+            }
+            .btn-primary:hover {
+                background: #5568d3;
+            }
             .btn-secondary {
                 background: #764ba2;
+                font-size: 0.95em;
             }
             .btn-secondary:hover {
                 background: #653a8a;
@@ -469,10 +478,26 @@ async def home():
                 </div>
 
                 <div class="section">
+                    <h2>Comment Tester la Demo</h2>
+                    <p><strong>Suivez ces 3 etapes simples :</strong></p>
+                    <ol style="margin-left: 20px; color: #555; line-height: 1.8;">
+                        <li><strong>Cliquez sur "Try the Interactive API Demo"</strong> ci-dessous</li>
+                        <li><strong>Ouvrez l'endpoint POST /generate</strong> dans l'interface Swagger</li>
+                        <li><strong>Cliquez sur "Try it out"</strong>, utilisez l'exemple JSON fourni, puis cliquez sur "Execute"</li>
+                    </ol>
+                    <div class="buttons">
+                        <a href="/docs" class="btn btn-primary">Try the Interactive API Demo</a>
+                    </div>
+                </div>
+
+                <div class="section">
                     <h2>Demo Actuelle</h2>
                     <p>
                         Cette instance Render est une <strong>demo publique en mode mock</strong>. L'API fonctionne sans charger
                         le modele Mistral 7B (7 milliards de parametres) pour economiser les ressources.
+                    </p>
+                    <p>
+                        <strong>The public Render demo runs in mock mode, so recruiters can test the API flow without GPU inference.</strong>
                     </p>
                     <div class="highlight">
                         <strong>Pourquoi mode mock ?</strong> Le vrai modele Mistral 7B fine-tune avec LoRA necessite un GPU
@@ -499,21 +524,12 @@ async def home():
                 </div>
 
                 <div class="section">
-                    <h2>Comment Tester la Demo</h2>
-                    <p><strong>Recommande :</strong> Utilisez la documentation interactive Swagger pour tester l'API facilement.</p>
-                    <ol style="margin-left: 20px; color: #555; line-height: 1.8;">
-                        <li><strong>Cliquez sur "Open API Docs"</strong> ci-dessous pour acceder a l'interface Swagger</li>
-                        <li><strong>Ouvrez l'endpoint POST /generate</strong> et cliquez sur "Try it out"</li>
-                        <li><strong>Utilisez l'exemple JSON</strong> fourni et cliquez sur "Execute" pour voir la reponse</li>
-                    </ol>
-                    <div class="buttons">
-                        <a href="/docs" class="btn" style="font-size: 1.1em; padding: 15px 30px;">Open API Docs (Swagger)</a>
-                    </div>
-                    <p style="margin-top: 20px; color: #666; font-size: 0.95em;">
-                        <strong>Note :</strong> Les endpoints /health et /info ci-dessous retournent du JSON brut (format API standard).
-                        Pour une experience interactive complete, utilisez la documentation Swagger.
+                    <h2>Endpoints Techniques</h2>
+                    <p style="color: #666; font-size: 0.95em;">
+                        <strong>Note :</strong> /health and /info are technical JSON endpoints.
+                        Pour une experience interactive complete, utilisez la demo ci-dessus.
                     </p>
-                    <div class="buttons" style="margin-top: 15px;">
+                    <div class="buttons">
                         <a href="/health" class="btn btn-secondary">Health JSON</a>
                         <a href="/info" class="btn btn-secondary">Project Info JSON</a>
                     </div>
