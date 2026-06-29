@@ -1,0 +1,16 @@
+services:
+  # Service web FastAPI
+  - type: web
+    name: llm-finance-finetuning-api
+    runtime: docker
+    plan: free
+    # Chemin de sante pour Render
+    healthCheckPath: /health
+    # Variables d'environnement
+    envVars:
+      # Mode mock par defaut (pas de chargement du modele Mistral 7B)
+      - key: APP_MODE
+        value: mock
+      # Desactiver le buffering Python pour voir les logs en temps reel
+      - key: PYTHONUNBUFFERED
+        value: "1"

@@ -1,0 +1,48 @@
+# Environnements virtuels Python
+.venv/
+venv/
+env/
+ENV/
+
+# Cache Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Git
+.git/
+.gitignore
+
+# Variables d'environnement (ne jamais inclure dans Docker)
+.env
+.env.local
+
+# Sorties du modele (trop lourdes pour Docker)
+outputs/
+models/
+wandb/
+
+# Donnees brutes et traitees (ne pas inclure dans l'image)
+data/raw/
+data/processed/
+
+# Fichiers aider
+.aider*
+.aiderignore
+
+# Notebooks Jupyter
+notebooks/.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# IDE
+.vscode/
+.idea/
+
+# Logs
+*.log
+
+# Fichiers temporaires
+*.tmp
+*.bak
+*.swp

@@ -328,6 +328,159 @@ Vous pouvez comparer les scores pour mesurer l'amélioration apportée par le fi
 - **Coût OpenAI** : Chaque évaluation consomme des tokens OpenAI (environ 0.01-0.05$ par question)
 - **Kaggle** : Vous pouvez aussi évaluer sur Kaggle avec un GPU gratuit
 
+## Live Demo - FastAPI on Render
+
+Une démo en ligne de l'API est disponible sur Render pour les recruteurs et testeurs.
+
+### Accès à la démo
+
+**URL de la documentation interactive (Swagger UI)** : `https://votre-app.onrender.com/docs`
+
+Cette interface permet de tester tous les endpoints de l'API directement depuis le navigateur.
+
+### Endpoints disponibles
+
+#### GET /health
+Vérifie que l'API fonctionne correctement.
+
+**Exemple de réponse** :
+```json
+{
+  "status": "healthy",
+  "model_loaded": false,
+  "model_name": "not loaded yet"
+}
+```
+
+#### GET /info
+Informations détaillées sur l'API, le modèle, et la stack technique.
+
+**Exemple de réponse** :
+```json
+{
+  "api_version": "1.0.0",
+  "deployment": "Render",
+  "api_framework": "FastAPI",
+  "app_mode": "mock",
+  "base_model": "mistralai/Mistral-7B-v0.1",
+  "llmops_stack": {
+    "evaluation": "DeepEval",
+    "vector_db": "Pinecone",
+    "experiment_tracking": "Weights & Biases"
+  },
+  "note": "Le modele Mistral 7B fine-tune sera disponible apres entrainement LoRA. Mode mock actif pour demo."
+}
+```
+
+#### POST /generate
+Génère une réponse à partir d'une question financière.
+
+**Corps de la requête** :
+```json
+{
+  "question": "Quelle est la difference entre une action et une obligation ?",
+  "max_tokens": 128,
+  "use_mock": true
+}
+```
+
+**Exemple de réponse** :
+```json
+{
+  "answer": "[MODE DEMO] Reponse simulee pour la question : 'Quelle est la difference entre une action et une obligation ?'. Cette API est une demonstration du pipeline LLM fine-tuning. Le modele Mistral 7B fine-tune avec LoRA sur le dataset finance-alpaca sera disponible apres entrainement complet. Stack technique : FastAPI + Transformers + PEFT + DeepEval + Pinecone + W&B. Consultez /info pour plus de details sur le projet.",
+  "model": "mock-model",
+  "mode": "mock"
+}
+```
+
+### Mode actuel : Mock
+
+La démo sur Render fonctionne actuellement en **mode mock** :
+- Aucun modèle Mistral 7B n'est chargé (économie de ressources)
+- Les réponses sont simulées pour démontrer l'architecture de l'API
+- Le mode mock permet de tester l'API sans GPU ni modèle lourd
+
+**Après l'entraînement LoRA** :
+- Le modèle Mistral 7B fine-tuné sera disponible
+- Le mode `use_mock=false` permettra d'obtenir de vraies réponses générées par le modèle
+- Les adaptateurs LoRA seront chargés automatiquement
+
+### Tester l'API avec curl
+
+```bash
+# Vérifier la santé de l'API
+curl https://votre-app.onrender.com/health
+
+# Obtenir les informations
+curl https://votre-app.onrender.com/info
+
+# Générer une réponse (mode mock)
+curl -X POST "https://votre-app.onrender.com/generate" \
+     -H "Content-Type: application/json" \
+     -d '{
+       "question": "Quelle est la difference entre une action et une obligation ?",
+       "max_tokens": 128,
+       "use_mock": true
+     }'
+```
+
+### Tester l'API avec Python
+
+```python
+import requests
+
+BASE_URL = "https://votre-app.onrender.com"
+
+# Vérifier la santé
+response = requests.get(f"{BASE_URL}/health")
+print(response.json())
+
+# Obtenir les informations
+response = requests.get(f"{BASE_URL}/info")
+print(response.json())
+
+# Générer une réponse
+response = requests.post(
+    f"{BASE_URL}/generate",
+    json={
+        "question": "Quelle est la difference entre une action et une obligation ?",
+        "max_tokens": 128,
+        "use_mock": True
+    }
+)
+print(response.json())
+```
+
+### Déploiement sur Render
+
+Le projet est configuré pour un déploiement automatique sur Render via Docker.
+
+**Fichiers de configuration** :
+- `Dockerfile` : Image Docker avec Python 3.12 slim
+- `render.yaml` : Configuration du service web Render
+- `.dockerignore` : Exclusion des fichiers inutiles
+
+**Variables d'environnement sur Render** :
+- `APP_MODE=mock` : Force le mode mock (pas de chargement du modèle)
+- `PYTHONUNBUFFERED=1` : Logs en temps réel
+
+**Pour déployer** :
+1. Connectez votre repo GitHub à Render
+2. Render détectera automatiquement le `render.yaml`
+3. Le service sera déployé avec le plan gratuit
+4. L'API sera accessible via l'URL fournie par Render
+
+### Stack technique démontrée
+
+- **API** : FastAPI avec documentation Swagger automatique
+- **LLM** : Mistral 7B (base) + LoRA fine-tuning
+- **Fine-tuning** : PEFT (Parameter-Efficient Fine-Tuning)
+- **Dataset** : finance-alpaca (1000 exemples)
+- **Évaluation** : DeepEval avec métriques personnalisées
+- **Vector DB** : Pinecone pour recherche sémantique
+- **Tracking** : Weights & Biases pour suivi des expériences
+- **Déploiement** : Docker + Render
+
 ## Dashboard de Visualisation
 
 Un dashboard Plotly Dash est disponible pour visualiser les résultats du fine-tuning.

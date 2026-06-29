@@ -19,6 +19,7 @@ Puis ouvrir : http://localhost:8000/docs
 from pathlib import Path
 from typing import Optional
 import logging
+import os
 
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
@@ -32,6 +33,11 @@ from training.config import TrainingConfig
 # Configuration du logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+# Mode de l'application (mock ou model)
+# En production sur Render, APP_MODE=mock par defaut
+APP_MODE = os.getenv("APP_MODE", "mock")
+logger.info(f"APP_MODE: {APP_MODE}")
 
 
 # ========================================
@@ -272,17 +278,26 @@ async def info():
     
     return {
         "api_version": "1.0.0",
+        "deployment": "Render",
+        "api_framework": "FastAPI",
+        "app_mode": APP_MODE,
         "base_model": cfg.model_name,
         "adapter_path": str(adapter_path),
         "adapter_available": adapter_exists,
         "model_loaded": _model_pipeline is not None,
         "is_finetuned": _is_finetuned if _model_pipeline else None,
         "mock_mode_available": True,
+        "llmops_stack": {
+            "evaluation": "DeepEval",
+            "vector_db": "Pinecone",
+            "experiment_tracking": "Weights & Biases"
+        },
         "endpoints": {
             "health": "GET /health",
             "info": "GET /info",
             "generate": "POST /generate"
-        }
+        },
+        "note": "Le modele Mistral 7B fine-tune sera disponible apres entrainement LoRA. Mode mock actif pour demo."
     }
 
 
@@ -295,6 +310,8 @@ async def generate(request: GenerationRequest):
     1. Mode mock (use_mock=True) : Retourne une reponse factice sans charger le modele
     2. Mode reel (use_mock=False) : Utilise le modele Mistral fine-tune
     
+    En environnement Render (APP_MODE=mock), le mode mock est force par defaut.
+    
     Args:
         request: Requete contenant la question et les parametres
         
@@ -304,15 +321,20 @@ async def generate(request: GenerationRequest):
     Raises:
         HTTPException: Si erreur lors de la generation
     """
+    # Si APP_MODE=mock, forcer le mode mock (environnement Render)
+    use_mock = request.use_mock or (APP_MODE == "mock")
+    
     # Mode mock : reponse factice sans charger le modele
-    if request.use_mock:
+    if use_mock:
         logger.info(f"Mode mock : question = '{request.question[:50]}...'")
         
         mock_answer = (
-            f"[MODE MOCK] Ceci est une reponse factice a votre question : '{request.question}'. "
-            f"Pour obtenir une vraie reponse du modele Mistral fine-tune, "
-            f"utilisez use_mock=false dans votre requete. "
-            f"Assurez-vous que le modele est disponible (verifiez /info)."
+            f"[MODE DEMO] Reponse simulee pour la question : '{request.question}'. "
+            f"Cette API est une demonstration du pipeline LLM fine-tuning. "
+            f"Le modele Mistral 7B fine-tune avec LoRA sur le dataset finance-alpaca "
+            f"sera disponible apres entrainement complet. "
+            f"Stack technique : FastAPI + Transformers + PEFT + DeepEval + Pinecone + W&B. "
+            f"Consultez /info pour plus de details sur le projet."
         )
         
         return GenerationResponse(
