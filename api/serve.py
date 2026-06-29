@@ -766,7 +766,7 @@ async def generate(request: GenerationRequest):
         
         return GenerationResponse(
             answer=answer,
-            model=model_name,
+            model=str(model_name or "mistral-7b-finance-finetuned"),
             mode="real"
         )
     
