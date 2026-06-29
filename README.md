@@ -378,24 +378,34 @@ Une démo en ligne de l'API est disponible sur Render pour les recruteurs et tes
 
 ### Accès à la démo
 
-**URL principale de la démo** : `https://votre-app.onrender.com/`
+**URL principale (Landing Page)** : `https://llm-finetuning-pipeline.onrender.com/`
 
 Cette page d'accueil présente le projet de manière claire et professionnelle, avec :
-- Objectif du projet et stack technique
-- Explication du mode mock actuel
+- Objectif du projet et stack technique complète
+- Explication du mode mock actuel (pourquoi pas de GPU)
 - Liens vers tous les endpoints disponibles
-- Exemple d'utilisation de l'API
+- Exemple d'utilisation de l'API avec JSON
+- Boutons interactifs vers /docs, /health, /info
 
-**URL de la documentation API interactive (Swagger UI)** : `https://votre-app.onrender.com/docs`
+**URL de la documentation API interactive (Swagger UI)** : `https://llm-finetuning-pipeline.onrender.com/docs`
 
 Cette interface permet de tester tous les endpoints de l'API directement depuis le navigateur.
 
 ### Endpoints disponibles
 
-#### GET /
-Page d'accueil de la démo avec présentation du projet, stack technique, et guide d'utilisation.
+#### GET / (Landing Page)
+Page d'accueil HTML de la démo avec présentation complète du projet.
 
-**Exemple de réponse** : Page HTML professionnelle avec toutes les informations pour les recruteurs.
+**Contenu** :
+- Titre et description du projet
+- Explication du mode mock actuel
+- Stack technique complète (badges visuels)
+- Boutons vers /docs, /health, /info
+- Exemple JSON pour POST /generate
+- Liste des fonctionnalités complètes du pipeline
+- Lien vers le code source GitHub
+
+**Exemple** : Ouvrez `https://llm-finetuning-pipeline.onrender.com/` dans votre navigateur pour voir la landing page professionnelle.
 
 #### GET /health
 Vérifie que l'API fonctionne correctement.
