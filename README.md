@@ -328,6 +328,36 @@ Vous pouvez comparer les scores pour mesurer l'amélioration apportée par le fi
 - **Coût OpenAI** : Chaque évaluation consomme des tokens OpenAI (environ 0.01-0.05$ par question)
 - **Kaggle** : Vous pouvez aussi évaluer sur Kaggle avec un GPU gratuit
 
+## Dashboard de Visualisation
+
+Un dashboard Plotly Dash est disponible pour visualiser les résultats du fine-tuning.
+
+### Lancer le dashboard
+
+```bash
+python interfaces/dash_app.py
+```
+
+Puis ouvrez dans votre navigateur : http://localhost:8050
+
+### Fonctionnalités du dashboard
+
+Le dashboard affiche :
+- **4 KPI Cards** : Amélioration des métriques, pourcentage de paramètres entraînés, taille des adaptateurs LoRA
+- **Graphique de comparaison** : Scores avant/après fine-tuning (Answer Relevancy et Finance Correctness)
+- **Courbe de training loss** : Évolution de la loss pendant l'entraînement
+- **Informations sur le projet** : Modèle, méthode, domaine, dataset, configuration LoRA
+
+**Note importante** : Les scores affichés sont des **données mock** tant que l'entraînement réel n'est pas terminé. Une fois que vous aurez lancé `python -m training.train` et `python -m evaluation.evaluate`, le dashboard pourra être mis à jour pour afficher les vrais résultats.
+
+### Utilité pour un portfolio
+
+Ce dashboard est conçu pour être présenté à des recruteurs :
+- Interface professionnelle et claire
+- Visualisations pertinentes pour comprendre l'impact du fine-tuning
+- Métriques techniques (LoRA) et business (amélioration des scores)
+- Fonctionne immédiatement sans dépendances lourdes (pas besoin de charger Mistral 7B)
+
 ## API REST
 
 Une API FastAPI est disponible pour exposer le modèle fine-tuné et générer des réponses.
