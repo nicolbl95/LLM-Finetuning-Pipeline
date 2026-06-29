@@ -400,12 +400,19 @@ Page d'accueil HTML de la démo avec présentation complète du projet.
 - Titre et description du projet
 - Explication du mode mock actuel
 - Stack technique complète (badges visuels)
-- Boutons vers /docs, /health, /info
+- **Guide "Comment Tester la Demo"** avec 3 étapes claires
+- Bouton principal vers /docs (Swagger UI) mis en évidence
+- Boutons secondaires vers /health et /info (JSON brut)
 - Exemple JSON pour POST /generate
 - Liste des fonctionnalités complètes du pipeline
 - Lien vers le code source GitHub
 
 **Exemple** : Ouvrez `https://llm-finetuning-pipeline.onrender.com/` dans votre navigateur pour voir la landing page professionnelle.
+
+**Guide d'utilisation pour recruteurs** :
+1. Cliquez sur "Open API Docs" pour accéder à l'interface Swagger interactive
+2. Ouvrez l'endpoint POST /generate et cliquez sur "Try it out"
+3. Utilisez l'exemple JSON fourni et cliquez sur "Execute" pour voir la réponse
 
 #### GET /health
 Vérifie que l'API fonctionne correctement.

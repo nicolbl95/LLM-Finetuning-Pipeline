@@ -499,21 +499,31 @@ async def home():
                 </div>
 
                 <div class="section">
-                    <h2>Endpoints Disponibles</h2>
+                    <h2>Comment Tester la Demo</h2>
+                    <p><strong>Recommande :</strong> Utilisez la documentation interactive Swagger pour tester l'API facilement.</p>
+                    <ol style="margin-left: 20px; color: #555; line-height: 1.8;">
+                        <li><strong>Cliquez sur "Open API Docs"</strong> ci-dessous pour acceder a l'interface Swagger</li>
+                        <li><strong>Ouvrez l'endpoint POST /generate</strong> et cliquez sur "Try it out"</li>
+                        <li><strong>Utilisez l'exemple JSON</strong> fourni et cliquez sur "Execute" pour voir la reponse</li>
+                    </ol>
                     <div class="buttons">
-                        <a href="/docs" class="btn">Open API Docs (Swagger)</a>
-                        <a href="/health" class="btn btn-secondary">Health Check</a>
-                        <a href="/info" class="btn btn-secondary">Project Info</a>
+                        <a href="/docs" class="btn" style="font-size: 1.1em; padding: 15px 30px;">Open API Docs (Swagger)</a>
+                    </div>
+                    <p style="margin-top: 20px; color: #666; font-size: 0.95em;">
+                        <strong>Note :</strong> Les endpoints /health et /info ci-dessous retournent du JSON brut (format API standard).
+                        Pour une experience interactive complete, utilisez la documentation Swagger.
+                    </p>
+                    <div class="buttons" style="margin-top: 15px;">
+                        <a href="/health" class="btn btn-secondary">Health JSON</a>
+                        <a href="/info" class="btn btn-secondary">Project Info JSON</a>
                     </div>
                 </div>
 
                 <div class="section">
-                    <h2>Exemple d'Utilisation</h2>
-                    <p>Testez l'endpoint de generation avec cet exemple :</p>
+                    <h2>Exemple JSON pour POST /generate</h2>
+                    <p>Copiez-collez cet exemple dans Swagger UI (bouton "Try it out") :</p>
                     <div class="code-block">
-                        <pre>POST /generate
-
-{
+                        <pre>{
   "question": "Quelle est la difference entre une action et une obligation ?",
   "max_tokens": 128,
   "use_mock": true
