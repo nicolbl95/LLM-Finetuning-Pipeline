@@ -17,7 +17,7 @@ Puis ouvrir : http://localhost:8000/docs
 """
 
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Any
 import logging
 import os
 
@@ -96,9 +96,10 @@ app = FastAPI(
 # ========================================
 
 # Ces variables seront initialisees au premier appel /generate avec use_mock=False
-_model_pipeline = None
-_model_name = None
-_is_finetuned = False
+# Type: Optional[Any] car le pipeline Hugging Face n'est pas importe au demarrage
+_model_pipeline: Optional[Any] = None
+_model_name: Optional[str] = None
+_is_finetuned: bool = False
 
 
 # ========================================
@@ -217,7 +218,9 @@ def load_model_and_tokenizer(cfg):
         
         # Creer le pipeline de generation
         logger.info("Creation du pipeline de generation...")
-        gen_pipeline = pipeline(
+        # NOTE: PeftModel herite de PreTrainedModel et est compatible avec pipeline()
+        # Pylance peut afficher un warning mais le code fonctionne correctement au runtime
+        gen_pipeline = pipeline(  # type: ignore[call-overload]
             "text-generation",
             model=model,
             tokenizer=tokenizer,
