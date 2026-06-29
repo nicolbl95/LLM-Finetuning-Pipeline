@@ -487,6 +487,103 @@ response = requests.post(
 print(response.json())
 ```
 
+## Upload vers Hugging Face Hub
+
+Une fois votre modèle fine-tuné, vous pouvez le partager sur Hugging Face Hub pour le rendre accessible à d'autres utilisateurs.
+
+### Prérequis
+
+1. **Créer un compte Hugging Face** : https://huggingface.co/join
+2. **Obtenir un token d'accès** :
+   - Allez sur https://huggingface.co/settings/tokens
+   - Cliquez sur "New token"
+   - Donnez un nom au token (ex: "upload-lora-models")
+   - Sélectionnez les permissions "write"
+   - Copiez le token généré
+
+3. **Configurer le token dans .env** :
+```
+HF_TOKEN=votre_token_huggingface_ici
+```
+
+**Important** : Ne commitez JAMAIS votre token dans Git. Le fichier `.env` est déjà dans `.gitignore`.
+
+### Vérifier la configuration
+
+Avant d'uploader, vérifiez que tout est correctement configuré :
+
+```bash
+python -m training.upload_to_hub --check-only
+```
+
+Cette commande vérifie :
+- Que le token HF est présent dans `.env`
+- Que le dossier `outputs/mistral-finance` existe
+- Que le dossier contient des fichiers
+
+Si tout est OK, vous verrez :
+```
+[OK] Token Hugging Face trouve
+[OK] Dossier du modele trouve: outputs/mistral-finance
+     Nombre de fichiers: X
+[MODE CHECK-ONLY] Verification terminee avec succes!
+```
+
+### Uploader le modèle
+
+Une fois l'entraînement terminé et la vérification passée :
+
+```bash
+# Upload public (par défaut)
+python -m training.upload_to_hub
+
+# Upload privé
+python -m training.upload_to_hub --private
+
+# Upload avec des paramètres personnalisés
+python -m training.upload_to_hub --folder-path mon/dossier --repo-id mon-user/mon-modele
+```
+
+Le script va :
+1. Créer le repo sur Hugging Face (s'il n'existe pas)
+2. Uploader tous les fichiers du dossier
+3. Afficher l'URL finale : https://huggingface.co/nicolbl95/mistral-7b-finance-finetuned
+
+### Utiliser le modèle uploadé
+
+Une fois uploadé, n'importe qui peut charger votre modèle :
+
+```python
+from peft import PeftModel
+from transformers import AutoModelForCausalLM
+
+# Charger le modèle de base
+base_model = AutoModelForCausalLM.from_pretrained("mistralai/Mistral-7B-v0.1")
+
+# Charger vos adaptateurs LoRA depuis Hugging Face
+model = PeftModel.from_pretrained(base_model, "nicolbl95/mistral-7b-finance-finetuned")
+```
+
+### Erreurs courantes
+
+**Token non trouvé** :
+```
+[ERREUR] Token Hugging Face non trouve!
+```
+→ Ajoutez `HF_TOKEN=...` dans votre fichier `.env`
+
+**Dossier non trouvé** :
+```
+[ERREUR] Le dossier 'outputs/mistral-finance' n'existe pas!
+```
+→ Lancez d'abord l'entraînement avec `python -m training.train`
+
+**Dossier vide** :
+```
+[ERREUR] Le dossier 'outputs/mistral-finance' est vide!
+```
+→ L'entraînement ne s'est pas terminé correctement, relancez-le
+
 ## Structure du Projet
 
 ```
