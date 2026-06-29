@@ -23,11 +23,9 @@ import os
 
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
-from transformers import AutoTokenizer, AutoModelForCausalLM, pipeline
-from peft import PeftModel
-import torch
 
-from training.config import TrainingConfig
+# NOTE: Les imports lourds (transformers, peft, torch) sont deplaces
+# dans load_model_and_tokenizer() pour permettre le mode mock sans ces dependances
 
 
 # Configuration du logging
@@ -120,15 +118,18 @@ def build_prompt(question: str) -> str:
 """
 
 
-def load_model_and_tokenizer(cfg: TrainingConfig):
+def load_model_and_tokenizer(cfg):
     """
     Charge le modele et le tokenizer avec support des adaptateurs LoRA.
     
     Cette fonction :
-    1. Charge le tokenizer du modele de base
-    2. Charge le modele de base (Mistral 7B)
-    3. Si des adaptateurs LoRA existent dans output_dir, les charge
-    4. Cree un pipeline text-generation
+    1. Importe les dependances lourdes (transformers, peft, torch)
+    2. Charge le tokenizer du modele de base
+    3. Charge le modele de base (Mistral 7B)
+    4. Si des adaptateurs LoRA existent dans output_dir, les charge
+    5. Cree un pipeline text-generation
+    
+    NOTE: Les imports sont faits ici pour permettre le mode mock sans ces dependances.
     
     Args:
         cfg: Configuration d'entrainement (contient model_name et output_dir)
@@ -140,10 +141,24 @@ def load_model_and_tokenizer(cfg: TrainingConfig):
             - is_finetuned: True si adaptateurs LoRA charges
             
     Raises:
+        ImportError: Si transformers/peft/torch ne sont pas installes
         FileNotFoundError: Si le modele de base n'existe pas
         RuntimeError: Si erreur lors du chargement
     """
     global _model_pipeline, _model_name, _is_finetuned
+    
+    # Importer les dependances lourdes seulement quand necessaire
+    try:
+        from transformers import AutoTokenizer, AutoModelForCausalLM, pipeline
+        from peft import PeftModel
+        import torch
+    except ImportError as e:
+        logger.error(f"Dependances manquantes : {e}")
+        raise ImportError(
+            "Les dependances transformers/peft/torch ne sont pas installees. "
+            "Cette instance Render utilise requirements-deploy.txt (mode mock uniquement). "
+            "Pour utiliser le modele reel, installez requirements.txt complet dans un environnement local ou Kaggle."
+        )
     
     logger.info(f"Chargement du tokenizer : {cfg.model_name}")
     
@@ -222,10 +237,14 @@ def get_model_pipeline():
     
     Si le modele n'est pas encore charge, le charge maintenant.
     
+    NOTE: Cette fonction importe TrainingConfig seulement quand necessaire
+    pour eviter les imports lourds en mode mock.
+    
     Returns:
         tuple: (pipeline, model_name, is_finetuned)
         
     Raises:
+        ImportError: Si les dependances ne sont pas installees
         RuntimeError: Si erreur lors du chargement
     """
     global _model_pipeline, _model_name, _is_finetuned
@@ -236,6 +255,17 @@ def get_model_pipeline():
     
     # Sinon, charger maintenant
     logger.info("Premier appel : chargement du modele...")
+    
+    # Importer TrainingConfig seulement maintenant
+    try:
+        from training.config import TrainingConfig
+    except ImportError as e:
+        logger.error(f"Impossible d'importer TrainingConfig : {e}")
+        raise ImportError(
+            "Le module training.config n'est pas disponible. "
+            "Cette instance Render est en mode mock uniquement."
+        )
+    
     cfg = TrainingConfig()
     _model_pipeline, _model_name, _is_finetuned = load_model_and_tokenizer(cfg)
     
@@ -268,37 +298,80 @@ async def info():
     """
     Informations sur l'API et le modele.
     
+    NOTE: En mode mock (Render), certaines informations ne sont pas disponibles
+    car TrainingConfig necessite des dependances lourdes.
+    
     Returns:
         dict: Informations detaillees
     """
-    cfg = TrainingConfig()
+    # En mode mock, retourner des infos limitees sans charger TrainingConfig
+    if APP_MODE == "mock":
+        return {
+            "api_version": "1.0.0",
+            "deployment": "Render",
+            "api_framework": "FastAPI",
+            "app_mode": "mock",
+            "base_model": "mistralai/Mistral-7B-v0.1",
+            "model_loaded": False,
+            "mock_mode_available": True,
+            "real_mode_available": False,
+            "llmops_stack": {
+                "evaluation": "DeepEval",
+                "vector_db": "Pinecone",
+                "experiment_tracking": "Weights & Biases"
+            },
+            "endpoints": {
+                "health": "GET /health",
+                "info": "GET /info",
+                "generate": "POST /generate"
+            },
+            "note": "Cette instance Render est en mode demo (mock). Le modele Mistral 7B reel necessite requirements.txt complet et un environnement avec GPU. Utilisez use_mock=true dans vos requetes /generate."
+        }
     
-    adapter_path = Path(cfg.output_dir)
-    adapter_exists = adapter_path.exists() and (adapter_path / "adapter_config.json").exists()
-    
-    return {
-        "api_version": "1.0.0",
-        "deployment": "Render",
-        "api_framework": "FastAPI",
-        "app_mode": APP_MODE,
-        "base_model": cfg.model_name,
-        "adapter_path": str(adapter_path),
-        "adapter_available": adapter_exists,
-        "model_loaded": _model_pipeline is not None,
-        "is_finetuned": _is_finetuned if _model_pipeline else None,
-        "mock_mode_available": True,
-        "llmops_stack": {
-            "evaluation": "DeepEval",
-            "vector_db": "Pinecone",
-            "experiment_tracking": "Weights & Biases"
-        },
-        "endpoints": {
-            "health": "GET /health",
-            "info": "GET /info",
-            "generate": "POST /generate"
-        },
-        "note": "Le modele Mistral 7B fine-tune sera disponible apres entrainement LoRA. Mode mock actif pour demo."
-    }
+    # Mode reel : charger TrainingConfig
+    try:
+        from training.config import TrainingConfig
+        cfg = TrainingConfig()
+        
+        adapter_path = Path(cfg.output_dir)
+        adapter_exists = adapter_path.exists() and (adapter_path / "adapter_config.json").exists()
+        
+        return {
+            "api_version": "1.0.0",
+            "deployment": "Local/Kaggle",
+            "api_framework": "FastAPI",
+            "app_mode": "real",
+            "base_model": cfg.model_name,
+            "adapter_path": str(adapter_path),
+            "adapter_available": adapter_exists,
+            "model_loaded": _model_pipeline is not None,
+            "is_finetuned": _is_finetuned if _model_pipeline else None,
+            "mock_mode_available": True,
+            "real_mode_available": True,
+            "llmops_stack": {
+                "evaluation": "DeepEval",
+                "vector_db": "Pinecone",
+                "experiment_tracking": "Weights & Biases"
+            },
+            "endpoints": {
+                "health": "GET /health",
+                "info": "GET /info",
+                "generate": "POST /generate"
+            },
+            "note": "Le modele Mistral 7B fine-tune sera disponible apres entrainement LoRA. Mode mock et reel disponibles."
+        }
+    except ImportError:
+        # Si TrainingConfig n'est pas disponible, retourner infos limitees
+        return {
+            "api_version": "1.0.0",
+            "deployment": "Unknown",
+            "api_framework": "FastAPI",
+            "app_mode": APP_MODE,
+            "model_loaded": _model_pipeline is not None,
+            "mock_mode_available": True,
+            "real_mode_available": False,
+            "note": "Configuration incomplete. Mode mock uniquement disponible."
+        }
 
 
 @app.post("/generate", response_model=GenerationResponse)
@@ -381,7 +454,20 @@ async def generate(request: GenerationRequest):
             model=model_name,
             mode="real"
         )
-        
+    
+    except ImportError as e:
+        logger.error(f"Dependances manquantes : {e}")
+        raise HTTPException(
+            status_code=503,
+            detail=(
+                "Le mode reel n'est pas disponible sur cette instance. "
+                "Les dependances transformers/peft/torch ne sont pas installees. "
+                "Cette instance Render utilise requirements-deploy.txt (mode mock uniquement). "
+                "Pour utiliser le modele Mistral 7B reel, deployez avec requirements.txt complet "
+                "dans un environnement local ou Kaggle avec GPU. "
+                "Utilisez use_mock=true pour tester l'API en mode demo."
+            )
+        )
     except RuntimeError as e:
         logger.error(f"Erreur lors du chargement du modele : {e}")
         raise HTTPException(
